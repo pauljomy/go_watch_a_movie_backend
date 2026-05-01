@@ -1,27 +1,21 @@
-package dbrepo
+package postgres
 
 import (
-	"backend/internals/models"
+	"backend/internal/models"
 	"context"
-	"database/sql"
 	"time"
 )
 
-type PostgresDBRepo struct {
-	DB *sql.DB
-}
-
 const dbTimeout = time.Second * 3
 
-func (m *PostgresDBRepo) GetAllMovies() ([]*models.Movie, error) {
-
+func (m *PostgresMovieStore) GetAllMovies() ([]*models.Movie, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	query := `select id, title, release_date, runtime, mpaa_rating, description, coalesce(image,'') as image, created_at,
 	updated_at from movies`
 
-	rows, err := m.DB.QueryContext(ctx, query)
+	rows, err := m.db.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -40,8 +34,8 @@ func (m *PostgresDBRepo) GetAllMovies() ([]*models.Movie, error) {
 			&movie.Description,
 			&movie.Image,
 			&movie.CreatedAt,
-			&movie.UpdatedAt)
-
+			&movie.UpdatedAt,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -49,5 +43,4 @@ func (m *PostgresDBRepo) GetAllMovies() ([]*models.Movie, error) {
 	}
 
 	return movies, nil
-
 }

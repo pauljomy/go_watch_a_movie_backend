@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ type Auth struct {
 	CookieName    string
 }
 
-type jwtUser struct {
+type JwtUser struct {
 	ID        int    `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
@@ -39,8 +39,8 @@ type RefreshTokenClaims struct {
 	jwt.RegisteredClaims
 }
 
-func (j *Auth) GenerateTokenPair(user *jwtUser) (TokenPairs, error) {
-	accesTokenClaims := AccessTokenClaims{
+func (j *Auth) GenerateTokenPair(user *JwtUser) (TokenPairs, error) {
+	accessTokenClaims := AccessTokenClaims{
 		Name: fmt.Sprintf("%s %s", user.FirstName, user.LastName),
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    j.Issuer,
@@ -51,7 +51,7 @@ func (j *Auth) GenerateTokenPair(user *jwtUser) (TokenPairs, error) {
 		},
 	}
 
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accesTokenClaims)
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims)
 	signedAccessToken, err := accessToken.SignedString([]byte(j.Secret))
 	if err != nil {
 		return TokenPairs{}, err
@@ -75,13 +75,12 @@ func (j *Auth) GenerateTokenPair(user *jwtUser) (TokenPairs, error) {
 		AccessToken:  signedAccessToken,
 		RefreshToken: signedRefreshToken,
 	}, nil
-
 }
 
-func (j *Auth) GetRefreshCookie(refershToken string) *http.Cookie {
+func (j *Auth) GetRefreshCookie(refreshToken string) *http.Cookie {
 	return &http.Cookie{
 		Name:     j.CookieName,
-		Value:    refershToken,
+		Value:    refreshToken,
 		Path:     j.CookiePath,
 		Domain:   j.CookieDomain,
 		Expires:  time.Now().UTC().Add(j.RefreshExpiry),
@@ -92,7 +91,7 @@ func (j *Auth) GetRefreshCookie(refershToken string) *http.Cookie {
 	}
 }
 
-func (j *Auth) GetExpiredRefreshCookie(refershToken string) *http.Cookie {
+func (j *Auth) GetExpiredRefreshCookie() *http.Cookie {
 	return &http.Cookie{
 		Name:     j.CookieName,
 		Value:    "",

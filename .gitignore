@@ -1,2 +1,22 @@
-./postgres-data
-postgres-data
+# Postgres data
+postgres-data/
+
+# Compiled binary
+bin/
+*.exe
+
+# Environment files
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Go test cache
+*.test
+*.out
