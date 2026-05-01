@@ -5,10 +5,12 @@ import (
 	"net/http"
 	"time"
 
-	"backend/cmd/api/handlers"
+	"backend/internal/handlers"
+	"backend/internal/middleware"
+
+	chimiddleware "github.com/go-chi/chi/v5/middleware"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 )
 
 type application struct {
@@ -24,10 +26,10 @@ type config struct {
 func (app *application) routes() http.Handler {
 	mux := chi.NewRouter()
 
-	mux.Use(logRequest(app.logger))
-	mux.Use(middleware.Recoverer)
-	mux.Use(commonHeaders)
-	mux.Use(enableCORS)
+	mux.Use(middleware.LogRequest(app.logger))
+	mux.Use(chimiddleware.Recoverer)
+	mux.Use(middleware.CommonHeaders)
+	mux.Use(middleware.EnableCORS)
 
 	mux.Route("/v1", func(r chi.Router) {
 		r.Get("/health", app.handler.Health)
