@@ -9,3 +9,11 @@ type PostgresMovieStore struct {
 func NewPostgresMovieStore(db *pgxpool.Pool) *PostgresMovieStore {
 	return &PostgresMovieStore{db: db}
 }
+
+type PostgresAuthStore struct {
+	db *pgxpool.Pool
+}
+
+func NewPostgressAuthStore(db *pgxpool.Pool) *PostgresAuthStore {
+	return &PostgresAuthStore{db: db}
+}

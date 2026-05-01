@@ -42,6 +42,7 @@ func main() {
 	h := &handlers.Handler{
 		Storage: store.Storage{
 			Movies: postgres.NewPostgresMovieStore(conn),
+			Auth:   postgres.NewPostgressAuthStore(conn),
 		},
 		Auth: auth.Auth{
 			Issuer:        jwtIssuer,
