@@ -1,4 +1,4 @@
-package main
+package middleware
 
 import (
 	"log/slog"
@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func logRequest(logger *slog.Logger) func(http.Handler) http.Handler {
+func LogRequest(logger *slog.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
@@ -27,7 +27,7 @@ func logRequest(logger *slog.Logger) func(http.Handler) http.Handler {
 	}
 }
 
-func commonHeaders(next http.Handler) http.Handler {
+func CommonHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Security-Policy",
 			"default-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.gstatic.com")
@@ -40,7 +40,7 @@ func commonHeaders(next http.Handler) http.Handler {
 	})
 }
 
-func enableCORS(h http.Handler) http.Handler {
+func EnableCORS(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 

@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"backend/cmd/api/handlers"
+	"backend/internal/handlers"
 	"backend/internal/auth"
 	"backend/internal/db"
 	"backend/internal/store"
